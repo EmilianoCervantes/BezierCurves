@@ -21,7 +21,7 @@ using namespace std;
 #include "Point.h"
 Bezier* bezier;
 Point* puntos;
-Point* curva;
+Point* curva = new Point[20];
 
 void renderScene(void)
 {
@@ -51,10 +51,13 @@ void init()
 	}
 	bezier = new Bezier(n, puntos);
 	//bezier->evalBezier(t); regresa un punto
-	//Aquí generamos los 10 puntos azules de la curva
-	for (int i = 0; i < 10;i++) {
-		t += 0.1;
-		curva = bezier->evalBezier(t);
+	//Aquí generamos los n puntos azules de la curva
+	for (int i = 0; i < 20;i++) {
+		t += 0.05;
+		Point* p = bezier->evalBezier(t);
+		curva[i].x = p->x;
+		curva[i].y = p->y;
+		curva[i].z = p->z;
 	}
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);  // CULL: not draw it.
