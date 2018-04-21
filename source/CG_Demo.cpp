@@ -27,7 +27,13 @@ void renderScene(void)
 {
 	// Clear the window with current clearing color
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Dibujar puntos de control
 	bezier->draw();
+	//Dibujar curva
+	for (int i = 0; i < 20; i++)
+	{
+		curva[i].draw();
+	}
 	glutSwapBuffers();
 }
 
@@ -38,8 +44,11 @@ void init()
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	int n = 5;
 	float t = 0.0;
-	puntos = new Point[5];
-	for (int i; i < n; i++)
+	//Porque el degree son las conexiones entre puntos
+	//Si tienes un degree 1 significa que tienes una conexión entre dos puntos
+	//Por eso es n+1 en Point[] y en el for
+	puntos = new Point[n+1];
+	for (int i; i < n+1; i++)
 	{
 		puntos[i].x = 1.0*i;
 		puntos[i].y = 1.0*i;
@@ -52,7 +61,8 @@ void init()
 	bezier = new Bezier(n, puntos);
 	//bezier->evalBezier(t); regresa un punto
 	//Aquí generamos los n puntos azules de la curva
-	for (int i = 0; i < 20;i++) {
+	for (int i = 0; i < 20;i++)
+	{
 		t += 0.05;
 		Point* p = bezier->evalBezier(t);
 		curva[i].x = p->x;
