@@ -34,6 +34,22 @@ void renderScene(void)
 	{
 		curva[i].draw();
 	}
+	//Punto en movimiento
+	Point* objetoEnMovimiento = new Point();
+	objetoEnMovimiento->r = 0.0;
+	objetoEnMovimiento->g = 1.0;
+	objetoEnMovimiento->b = 0.0;
+	objetoEnMovimiento->radius = 10.0;
+	/*
+	El tiempo avanza más lento y el for es más grande para que
+	se vea como se mueve el punto
+	*/
+	float tiempo = 0.0;
+	for (int i = 0; i < 1000; i++)
+	{
+		objetoEnMovimiento = bezier->evalBezier(tiempo);
+		tiempo += 0.001;
+	}
 	glutSwapBuffers();
 }
 
@@ -63,11 +79,11 @@ void init()
 	//Aquí generamos los n puntos azules de la curva
 	for (int i = 0; i < 20;i++)
 	{
-		t += 0.05;
 		Point* p = bezier->evalBezier(t);
 		curva[i].x = p->x;
 		curva[i].y = p->y;
 		curva[i].z = p->z;
+		t += 0.05;
 	}
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);  // CULL: not draw it.
