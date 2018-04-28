@@ -1,69 +1,56 @@
-#include "Bezier.h"
+//
+//  Bezier.cpp
+//  Bezier
+//
+//  Created by Irvin Mundo on 20/04/18.
+//  Copyright Â© 2018 MundoSystems. All rights reserved.
+//
 
-Bezier::Bezier(int d, Point* ctrl)
-{
-	degree = d;
-	ctrlPoints = new Point[degree];
-	for (int i = 0; i < degree+1; i++)
-	{
-		ctrlPoints[i].x = ctrl[i].x;
-		ctrlPoints[i].y = ctrl[i].y;
-		ctrlPoints[i].z = ctrl[i].z;
-		ctrlPoints[i].r = ctrl[i].r;
-		ctrlPoints[i].g = ctrl[i].g;
-		ctrlPoints[i].b = ctrl[i].b;
-		ctrlPoints[i].radius = ctrl[i].radius;
-	}
-	coefficients = new float[degree];
-	//Inicializar coeficientes para usar después.
-	for (int i = 0; i < degree; i++)
-	{
-		coefficients[i] = binomial(degree, i);
-	}
+#include "Bezier.hpp"
 
-	evalBezier(0.9f);
+Bezier::Bezier(int d, Point* ctrl){
+    degree = d;
+    ctrlPoints = new Point[degree];
+    int i = 0;
+    for(i = 0; i < degree; i++){
+        ctrlPoints[i].x = ctrl[i].x;
+        ctrlPoints[i].y = ctrl[i].y;
+        ctrlPoints[i].z = ctrl[i].z;
+        ctrlPoints[i].r = ctrl[i].r;
+        ctrlPoints[i].g = ctrl[i].g;
+        ctrlPoints[i].b = ctrl[i].b;
+        ctrlPoints[i].radius = ctrl[i].radius;
+    }
+    coefficients = new float[degree];
+    
+    //INitialize yout coefficients here, for later use
+    for(i = 0; i < degree; i++){
+        coefficients[i] = binomial(d-1,i);
+    }
+    
 }
 
-Point* Bezier::evalBezier(float t)
-{
-	Point* ps = new Point[1];
-	ps[0].r = 0;
-	ps[0].g = 0;
-	ps[0].b = 1.0;
-	for (int i = 0; i < degree; i++)
-	{
-		ps[0].x += coefficients[i] * powf(1.0f - t, degree - i) * powf(t, i) * ctrlPoints[i].x;
-		ps[0].y += coefficients[i] * powf(1.0f - t, degree - i) * powf(t, i) * ctrlPoints[i].y;
-		ps[0].z += coefficients[i] * powf(1.0f - t, degree - i) * powf(t, i) * ctrlPoints[i].z;
-	}
-
-	return ps;
+void Bezier::draw(){
+    for(int i = 0; i < degree; i++){
+        ctrlPoints[i].draw();
+    }
 }
 
-int Bezier::factorial(int x)
-{
-	if (x == 0) return 1;
-	else return x * factorial(x - 1);
+Point* Bezier::evalBezier(float t){
+    Point* point = new Point();
+    for(int  i = 0; i < degree; i++){
+        point->x += coefficients[i]*powf(1.0f - t, degree-i-1)*powf(t,i)*ctrlPoints[i].x;
+        point->y += coefficients[i]*powf(1.0f - t, degree-i-1)*powf(t,i)*ctrlPoints[i].y;
+        point->z += coefficients[i]*powf(1.0f - t, degree-i-1)*powf(t,i)*ctrlPoints[i].z;
+    }
+    return point;
 }
 
-float Bezier::binomial(int n, int i)
-{
-	return (float)factorial(n) / (factorial(i)*factorial(n - i));
+int Bezier::factorial(int x){
+    if(x == 0) return 1;
+    else return x * factorial(x-1);
 }
 
-void Bezier::draw()
-{
-	glPushMatrix();
-	{
-		for (int i = 0; i < degree; i++)
-		{
-			ctrlPoints[i].draw();
-		}
-	}
-	glPopMatrix();
-}
-
-
-Bezier::~Bezier()
-{
+float Bezier::binomial(int n, int i){
+    return (float)factorial(n)/(factorial(i)*factorial(n-1));
 }
